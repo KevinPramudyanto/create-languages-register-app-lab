@@ -14,105 +14,98 @@ function App() {
   const retrieveAllLanguages = async () => {
     try {
       const res = await fetch(import.meta.env.VITE_SERVER + "/lab/languages");
-
       if (!res.ok) {
         throw new Error("error");
       }
-
       const data = await res.json();
       setLanguages(data);
     } catch (error) {
-      console.log(error.message);
+      console.log(error);
     }
   };
 
   const addLanguage = async () => {
-    const res = await fetch(import.meta.env.VITE_SERVER + "/lab/languages", {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        language: languageRef.current.value,
-      }),
-    });
-
-    if (!res.ok) {
-      throw new Error("error");
+    try {
+      const res = await fetch(import.meta.env.VITE_SERVER + "/lab/languages", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ language: languageRef.current.value }),
+      });
+      if (!res.ok) {
+        throw new Error("error");
+      }
+      retrieveAllLanguages();
+      languageRef.current.value = "";
+    } catch (error) {
+      console.log(error);
     }
-
-    retrieveAllLanguages();
-    languageRef.current.value = "";
   };
 
   const deleteLanguage = async (language) => {
-    const res = await fetch(
-      import.meta.env.VITE_SERVER + "/lab/languages/" + language,
-      {
-        method: "DELETE",
-        headers: { "Content-Type": "application/json" },
+    try {
+      const res = await fetch(
+        import.meta.env.VITE_SERVER + "/lab/languages/" + language,
+        { method: "DELETE" }
+      );
+      if (!res.ok) {
+        throw new Error("error");
       }
-    );
-
-    if (!res.ok) {
-      throw new Error("error");
+      retrieveAllLanguages();
+    } catch (error) {
+      console.log(error);
     }
-
-    retrieveAllLanguages();
   };
 
   const retrieveAllUsers = async () => {
     try {
       const res = await fetch(import.meta.env.VITE_SERVER + "/lab/users");
-
       if (!res.ok) {
         throw new Error("error");
       }
-
       const data = await res.json();
       setUsers(data);
     } catch (error) {
-      console.log(error.message);
+      console.log(error);
     }
   };
 
   const addUser = async () => {
-    const res = await fetch(import.meta.env.VITE_SERVER + "/lab/users", {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        name: nameRef.current.value,
-        age: ageRef.current.value,
-        country: countryRef.current.value,
-      }),
-    });
-
-    if (!res.ok) {
-      throw new Error("error");
+    try {
+      const res = await fetch(import.meta.env.VITE_SERVER + "/lab/users", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: nameRef.current.value,
+          age: ageRef.current.value,
+          country: countryRef.current.value,
+        }),
+      });
+      if (!res.ok) {
+        throw new Error("error");
+      }
+      retrieveAllUsers();
+      nameRef.current.value = "";
+      ageRef.current.value = "";
+      countryRef.current.value = "";
+    } catch (error) {
+      console.log(error);
     }
-
-    retrieveAllUsers();
-    nameRef.current.value = "";
-    ageRef.current.value = "";
-    countryRef.current.value = "";
   };
 
   const deleteUser = async (id) => {
-    const res = await fetch(import.meta.env.VITE_SERVER + "/lab/users", {
-      method: "DELETE",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        user_id: id,
-      }),
-    });
-
-    if (!res.ok) {
-      throw new Error("error");
+    try {
+      const res = await fetch(import.meta.env.VITE_SERVER + "/lab/users", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ user_id: id }),
+      });
+      if (!res.ok) {
+        throw new Error("error");
+      }
+      retrieveAllUsers();
+    } catch (error) {
+      console.log(error);
     }
-
-    retrieveAllUsers();
   };
 
   useEffect(() => {
@@ -196,6 +189,17 @@ function App() {
         <div className="row my-2"></div>
 
         <h4>All users list :</h4>
+        <div className="row my-2">
+          <label className="col-sm-3">
+            <u>NAME</u>
+          </label>
+          <label className="col-sm-3">
+            <u>AGE</u>
+          </label>
+          <label className="col-sm-3">
+            <u>COUNTRY</u>
+          </label>
+        </div>
         {users.map((user) => (
           <div key={user.id} className="row my-2">
             <label className="col-sm-3">{user.name}</label>

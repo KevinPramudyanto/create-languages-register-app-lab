@@ -14,87 +14,85 @@ const OverLay = (props) => {
         import.meta.env.VITE_SERVER + "/lab/users/languages",
         {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            user_id: props.selectedUser.id,
-          }),
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ user_id: props.selectedUser.id }),
         }
       );
-
       if (!res.ok) {
         throw new Error("error");
       }
-
       const data = await res.json();
       setLanguages(data);
     } catch (error) {
-      console.log(error.message);
+      console.log(error);
     }
   };
 
   const addLanguage = async () => {
-    const res = await fetch(
-      import.meta.env.VITE_SERVER + "/lab/users/languages",
-      {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          user_id: props.selectedUser.id,
-          language: languageRef.current.value,
-        }),
+    try {
+      const res = await fetch(
+        import.meta.env.VITE_SERVER + "/lab/users/languages",
+        {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            user_id: props.selectedUser.id,
+            language: languageRef.current.value,
+          }),
+        }
+      );
+      if (!res.ok) {
+        throw new Error("error");
       }
-    );
-
-    if (!res.ok) {
-      throw new Error("error");
+      retrieveAllLanguages();
+      languageRef.current.value = "";
+    } catch (error) {
+      console.log(error);
     }
-
-    retrieveAllLanguages();
-    languageRef.current.value = "";
   };
 
   const deleteLanguage = async (language) => {
-    const res = await fetch(
-      import.meta.env.VITE_SERVER + "/lab/users/languages",
-      {
-        method: "DELETE",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          user_id: props.selectedUser.id,
-          language: language,
-        }),
+    try {
+      const res = await fetch(
+        import.meta.env.VITE_SERVER + "/lab/users/languages",
+        {
+          method: "DELETE",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            user_id: props.selectedUser.id,
+            language: language,
+          }),
+        }
+      );
+      if (!res.ok) {
+        throw new Error("error");
       }
-    );
-
-    if (!res.ok) {
-      throw new Error("error");
+      retrieveAllLanguages();
+    } catch (error) {
+      console.log(error);
     }
-
-    retrieveAllLanguages();
   };
 
   const updateUser = async () => {
-    const res = await fetch(import.meta.env.VITE_SERVER + "/lab/users", {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        user_id: props.selectedUser.id,
-        name: nameRef.current.value,
-        age: ageRef.current.value,
-        country: countryRef.current.value,
-      }),
-    });
-
-    if (!res.ok) {
-      throw new Error("error");
+    try {
+      const res = await fetch(import.meta.env.VITE_SERVER + "/lab/users", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          user_id: props.selectedUser.id,
+          name: nameRef.current.value,
+          age: ageRef.current.value,
+          country: countryRef.current.value,
+        }),
+      });
+      if (!res.ok) {
+        throw new Error("error");
+      }
+      props.retrieveAllUsers();
+      props.setShowUpdateModal(false);
+    } catch (error) {
+      console.log(error);
     }
-
-    props.retrieveAllUsers();
-    props.setShowUpdateModal(false);
   };
 
   useEffect(() => {
@@ -103,6 +101,8 @@ const OverLay = (props) => {
 
   return (
     <div className="backdrop">
+      <h2>Language Register App</h2>
+
       <div className="container border m-4 p-4">
         <h4>Update this user :</h4>
         <div className="row my-2">
