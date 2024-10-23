@@ -1,8 +1,11 @@
 import React, { useEffect, useRef, useState } from "react";
+import UpdateModal from "./components/UpdateModal";
 
 function App() {
   const [languages, setLanguages] = useState([]);
   const [users, setUsers] = useState([]);
+  const [showUpdateModal, setShowUpdateModal] = useState(false);
+  const [selectedUser, setSelectedUser] = useState({});
   const languageRef = useRef();
   const nameRef = useRef();
   const ageRef = useRef();
@@ -119,6 +122,14 @@ function App() {
 
   return (
     <>
+      {showUpdateModal && (
+        <UpdateModal
+          selectedUser={selectedUser}
+          retrieveAllUsers={retrieveAllUsers}
+          setShowUpdateModal={setShowUpdateModal}
+        />
+      )}
+
       <h2>Language Register App</h2>
 
       <div className="container border m-4 p-4">
@@ -185,14 +196,23 @@ function App() {
         <div className="row my-2"></div>
 
         <h4>All users list :</h4>
-        {users.map((item) => (
-          <div key={item.id} className="row my-2">
-            <label className="col-sm-3">{item.name}</label>
-            <label className="col-sm-3">{item.age}</label>
-            <label className="col-sm-3">{item.country}</label>
+        {users.map((user) => (
+          <div key={user.id} className="row my-2">
+            <label className="col-sm-3">{user.name}</label>
+            <label className="col-sm-3">{user.age}</label>
+            <label className="col-sm-3">{user.country}</label>
             <button
               className="col-sm-1 mx-2"
-              onClick={() => deleteUser(item.id)}
+              onClick={() => {
+                setShowUpdateModal(true);
+                setSelectedUser(user);
+              }}
+            >
+              detail
+            </button>
+            <button
+              className="col-sm-1 mx-2"
+              onClick={() => deleteUser(user.id)}
             >
               delete
             </button>
